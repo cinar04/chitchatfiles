@@ -63,16 +63,12 @@
 
       currentUser = user;
 
-      // Zaten tamamlandıysa geç
+      // Zaten tamamlandıysa geç — passwordSet değil nickname var mı bak
       const userDoc = await getDoc(doc(db, "users", user.uid));
-      if (userDoc.exists() && userDoc.data().passwordSet === true) {
-        // nickname ve email localStorage'da var mı kontrol et
-        if (!localStorage.getItem("email")) {
-          localStorage.setItem("email", user.email);
-        }
-        if (!localStorage.getItem("nickname")) {
-          localStorage.setItem("nickname", userDoc.data().nickname || user.email.split("@")[0]);
-        }
+      if (userDoc.exists() && userDoc.data().nickname) {
+        localStorage.setItem("email",    user.email);
+        localStorage.setItem("nickname", userDoc.data().nickname);
+        localStorage.setItem("userNo",   String(userDoc.data().userNo || ""));
         window.location.replace("index.html");
         return;
       }

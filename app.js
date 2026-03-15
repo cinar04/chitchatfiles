@@ -38,8 +38,6 @@ const messageInput     = document.getElementById("messageInput")
 const sendBtn          = document.getElementById("sendBtn")
 const backBtn          = document.getElementById("backBtn")
 const createGroupBtn   = document.getElementById("createGroupBtn")
-const searchBtn        = document.getElementById("searchBtn")
-const profileBtn       = document.getElementById("profileBtn")
 const settingsBtn      = document.getElementById("settingsBtn")
 const backFromSettings = document.getElementById("backFromSettings")
 
@@ -293,14 +291,6 @@ backBtn.onclick = () => {
   loadGroups()
 }
 
-profileBtn.onclick = () => {
-  window.location.replace("profile.html")
-}
-
-searchBtn.onclick = () => {
-  window.location.replace("search-users.html")
-}
-
 // ── MESAJLAR ──
 function loadMessages() {
   if (unsubscribe) unsubscribe()
@@ -321,13 +311,26 @@ function loadMessages() {
       div.className    = "bubble"
       div.classList.add(data.email === email ? "me" : "other")
       const displayName = data.nickname?.trim() ? data.nickname : (data.email?.split("@")[0] || "Kullanıcı")
-      div.innerHTML = `
-        <div class="message-header">
-          <span class="sender-name">${displayName}</span>
-          <span class="message-time">${timeString}</span>
-        </div>
-        <div class="message-text">${data.text}</div>
-      `
+      // XSS'e karşı güvenli oluşturma
+      const header = document.createElement("div")
+      header.className = "message-header"
+
+      const senderSpan = document.createElement("span")
+      senderSpan.className = "sender-name"
+      senderSpan.textContent = displayName
+
+      const timeSpan = document.createElement("span")
+      timeSpan.className = "message-time"
+      timeSpan.textContent = timeString
+
+      const msgText = document.createElement("div")
+      msgText.className = "message-text"
+      msgText.textContent = data.text
+
+      header.appendChild(senderSpan)
+      header.appendChild(timeSpan)
+      div.appendChild(header)
+      div.appendChild(msgText)
       messagesDiv.appendChild(div)
     })
     messagesDiv.scrollTop = messagesDiv.scrollHeight
@@ -365,7 +368,11 @@ messageInput.addEventListener("keydown", e => {
 createGroupBtn.onclick = () => {
   showInputDialog("Yeni Grup Oluştur", "Grup adını girin", "Grup adı", async (name) => {
     if (!name) return
-    const groupId = name.trim().toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9\-ğüşıöçĞÜŞİÖÇ]/g, "")
+    const groupId = name.trim().toLowerCase()
+      .replace(/ğ/g,"g").replace(/ü/g,"u").replace(/ş/g,"s")
+      .replace(/ı/g,"i").replace(/ö/g,"o").replace(/ç/g,"c")
+      .replace(/\s+/g, "-")
+      .replace(/[^a-z0-9-]/g, "")
     if (!groupId) { showToast("Geçersiz grup adı!", "error"); return }
 
     const existing = await getDoc(doc(db, "groups", groupId))
