@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ChitChat</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<script>
+if(!localStorage.getItem("email")){
+  window.location.replace("login.html")
+}
+</script>
+
+<div class="app">
+
+  <!-- GRUP LİSTESİ EKRANI -->
+  <div id="groupScreen" class="screen">
+    <div class="topbar">
+      <h2>💬 Gruplar</h2>
+      <div style="display: flex; gap: 8px;">
+        <button id="searchBtn" class="icon-btn" title="Kullanıcı Ara">🔍</button>
+        <button id="profileBtn" class="icon-btn" title="Profil Ayarları">⚙</button>
+      </div>
+    </div>
+    <div id="groupList" class="groupList"></div>
+    <button id="createGroupBtn" class="floatingBtn" title="Yeni Grup Oluştur">+</button>
+  </div>
+
+  <!-- SOHBET EKRANI -->
+  <div id="chatScreen" class="screen hidden">
+    <div class="chatHeader">
+      <button id="backBtn" class="icon-btn">←</button>
+      <div style="flex:1;text-align:center;">
+        <div id="groupTitle" style="font-weight:bold;">Grup</div>
+        <div id="userRole" style="font-size:12px;margin-top:4px;">Rol</div>
+      </div>
+      <button id="settingsBtn" class="icon-btn hidden">⚙</button>
+    </div>
+    <div id="messages" class="messages"></div>
+    <div class="messageBox">
+      <input id="messageInput" placeholder="Mesaj yaz...">
+      <button id="sendBtn">Gönder</button>
+    </div>
+  </div>
+
+  <!-- AYARLAR EKRANI -->
+  <div id="settingsScreen" class="screen hidden">
+    <div class="chatHeader">
+      <button id="backFromSettings" class="icon-btn">←</button>
+      <div style="flex:1;text-align:center;">
+        <div style="font-weight:bold;">⚙ Grup Ayarları</div>
+        <div id="settingsGroupName" style="font-size:12px;margin-top:4px;color:#94a3b8;"></div>
+      </div>
+      <div style="width:40px;"></div>
+    </div>
+
+    <div class="settings-body">
+
+      <!-- Üyeler -->
+      <div class="settings-card">
+        <div class="settings-card-title">👥 Üyeler</div>
+        <div id="membersList" class="members-list"></div>
+        <div class="add-member-row">
+          <input type="email" id="addMemberEmail" placeholder="E-posta ekle..." class="settings-input">
+          <select id="addMemberRole" class="settings-select">
+            <option value="normal">👤 Üye</option>
+            <option value="admin">👑 Admin</option>
+          </select>
+          <button id="addMemberBtn" class="btn-primary small">Ekle</button>
+        </div>
+      </div>
+
+      <!-- Grup Adı Değiştir -->
+      <div class="settings-card">
+        <div class="settings-card-title">✏️ Grup Adını Değiştir</div>
+        <div class="rename-row">
+          <input type="text" id="renameGroupInput" placeholder="Yeni grup adı" class="settings-input">
+          <button id="renameGroupBtn" class="btn-primary small">Kaydet</button>
+        </div>
+      </div>
+
+      <!-- Tehlikeli Bölge -->
+      <div class="settings-card danger-card">
+        <div class="settings-card-title">⚠️ Tehlikeli Bölge</div>
+        <p style="font-size:13px;color:#94a3b8;margin-bottom:12px;">Bu işlem geri alınamaz. Tüm mesajlar ve üye bilgileri silinir.</p>
+        <button id="deleteGroupBtn" class="btn-danger">🗑 Grubu Sil</button>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<script type="module" src="app.js"></script>
+
+</body>
+</html>

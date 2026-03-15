@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistem Ayarları</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .settings-container { max-width: 500px; margin: 0 auto; padding: 20px; }
+
+    .settings-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .settings-card h3 { margin: 0 0 15px 0; font-size: 18px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+
+    .select-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+    .radio-option {
+      padding: 12px 14px;
+      background: rgba(0,0,0,0.3);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-align: center;
+      font-size: 13px;
+      color: #cbd5e1;
+    }
+    .radio-option:hover { border-color: rgba(102,126,234,0.5); background: rgba(102,126,234,0.1); }
+    .radio-option.active {
+      background: linear-gradient(135deg, rgba(102,126,234,0.3) 0%, rgba(118,75,162,0.3) 100%);
+      border-color: #667eea; color: #e2e8f0; font-weight: 600;
+    }
+
+    .toggle-switch {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px; background: rgba(0,0,0,0.2); border-radius: 8px; margin-bottom: 10px;
+    }
+    .toggle-label { font-size: 13px; color: #cbd5e1; flex: 1; }
+
+    .switch {
+      position: relative; width: 44px; height: 24px;
+      background: #334155; border-radius: 12px; cursor: pointer; transition: all 0.3s;
+    }
+    .switch.active { background: #10b981; }
+    .switch-slider {
+      position: absolute; top: 2px; left: 2px;
+      width: 20px; height: 20px; background: white; border-radius: 10px; transition: all 0.3s;
+    }
+    .switch.active .switch-slider { left: 22px; }
+
+    .info-box {
+      background: rgba(102,126,234,0.1); border: 1px solid rgba(102,126,234,0.3);
+      border-radius: 8px; padding: 12px; font-size: 12px; color: #cbd5e1; margin-top: 10px; line-height: 1.6;
+    }
+
+    .button-group { display: flex; gap: 10px; flex-wrap: wrap; }
+
+    .btn-primary {
+      padding: 10px 16px; border: none; border-radius: 8px; font-size: 14px; font-weight: 500;
+      cursor: pointer; background: linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+      color: white; transition: all 0.3s; flex: 1; min-width: 120px;
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(102,126,234,0.3); }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    .btn-secondary {
+      padding: 10px 16px; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px;
+      font-size: 14px; font-weight: 500; cursor: pointer; background: transparent;
+      color: #cbd5e1; transition: all 0.3s;
+    }
+    .btn-secondary:hover { background: rgba(255,255,255,0.1); }
+
+    .top-nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 20px; background: rgba(255,255,255,0.05);
+      border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px;
+    }
+    .top-nav button { background: none; border: none; color: #e2e8f0; font-size: 24px; cursor: pointer; padding: 8px; }
+    .top-nav h1 { margin: 0; font-size: 20px; flex: 1; text-align: center; }
+
+    .success-message { color: #86efac; font-size: 12px; margin-top: 8px; display: none; }
+    .error-message   { color: #fca5a5; font-size: 12px; margin-top: 8px; display: none; }
+
+    .loading-spinner {
+      display: inline-block; width: 16px; height: 16px;
+      border: 2px solid rgba(255,255,255,0.2); border-top-color: #667eea;
+      border-radius: 50%; animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Açık tema overrides */
+    body.theme-light { background: #f1f5f9 !important; color: #1e293b !important; }
+    body.theme-light .settings-card { background: #ffffff; border-color: #e2e8f0; }
+    body.theme-light .settings-card h3 { color: #1e293b; }
+    body.theme-light .toggle-switch { background: rgba(0,0,0,0.05); }
+    body.theme-light .toggle-label { color: #475569; }
+    body.theme-light .radio-option { background: #f8fafc; border-color: #e2e8f0; color: #475569; }
+    body.theme-light .radio-option.active { background: rgba(102,126,234,0.15); }
+    body.theme-light .info-box { background: rgba(102,126,234,0.08); color: #475569; }
+    body.theme-light .top-nav { background: #ffffff; border-color: #e2e8f0; }
+    body.theme-light .top-nav button { color: #1e293b; }
+    body.theme-light .top-nav h1 { color: #1e293b; }
+    body.theme-light .btn-secondary { color: #475569; border-color: #e2e8f0; }
+  </style>
+</head>
+<body class="login-body">
+
+  <div class="app">
+    <div class="top-nav">
+      <button id="backBtn" title="Geri dön">←</button>
+      <h1>⚙️ Sistem Ayarları</h1>
+      <div style="width:40px;"></div>
+    </div>
+
+    <div class="settings-container">
+
+      <!-- Tema -->
+      <div class="settings-card">
+        <h3>🎨 Tema</h3>
+        <div class="select-group">
+          <div class="radio-option" id="themeLight">☀️ Açık</div>
+          <div class="radio-option active" id="themeDark">🌙 Koyu</div>
+        </div>
+        <div class="info-box">Tema tercihleriniz kaydedilir ve sonraki girişte de uygulanır.</div>
+      </div>
+
+      <!-- Dil -->
+      <div class="settings-card">
+        <h3>🌐 Dil</h3>
+        <div class="select-group">
+          <div class="radio-option active" id="langTR">🇹🇷 Türkçe</div>
+          <div class="radio-option" id="langEN">🇬🇧 English</div>
+        </div>
+        <div class="info-box" id="langInfoBox">Dil değişikliği kaydedilir. Tam uygulama için sayfayı yenileyebilirsiniz.</div>
+      </div>
+
+      <!-- Bildirimler -->
+      <div class="settings-card">
+        <h3>🔔 Bildirimler</h3>
+        <div class="toggle-switch">
+          <span class="toggle-label">Bildirimleri Etkinleştir</span>
+          <div class="switch active" id="enableNotifications"><div class="switch-slider"></div></div>
+        </div>
+        <div class="toggle-switch">
+          <span class="toggle-label">Ses Bildirimi</span>
+          <div class="switch active" id="enableSound"><div class="switch-slider"></div></div>
+        </div>
+        <div class="toggle-switch">
+          <span class="toggle-label">Masaüstü Bildirimi</span>
+          <div class="switch active" id="enableDesktop"><div class="switch-slider"></div></div>
+        </div>
+        <div class="info-box">📍 Masaüstü bildirimleri için tarayıcı izni gerekir.</div>
+      </div>
+
+      <!-- Gizlilik -->
+      <div class="settings-card">
+        <h3>🔒 Gizlilik</h3>
+        <div style="margin-bottom:12px;">
+          <label style="font-size:13px;color:#cbd5e1;display:block;margin-bottom:8px;">Profilimi Kim Görebilir?</label>
+          <select id="profileVisibility" style="width:100%;padding:10px 12px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.1);color:#e2e8f0;border-radius:8px;font-size:14px;outline:none;">
+            <option value="public">👥 Herkese Açık</option>
+            <option value="friends">👫 Sadece Arkadaşlar</option>
+            <option value="private">🔒 Gizli</option>
+          </select>
+        </div>
+        <div class="toggle-switch">
+          <span class="toggle-label">Son Çevrimiçi Durumu Göster</span>
+          <div class="switch active" id="showOnlineStatus"><div class="switch-slider"></div></div>
+        </div>
+        <div class="toggle-switch">
+          <span class="toggle-label">Aktivite Durumu Göster</span>
+          <div class="switch active" id="showActivityStatus"><div class="switch-slider"></div></div>
+        </div>
+      </div>
+
+      <!-- Veri Yönetimi -->
+      <div class="settings-card">
+        <h3>💾 Veri Yönetimi</h3>
+        <button class="btn-secondary" id="exportDataBtn" style="width:100%;margin-bottom:10px;">📥 Verilerimi İndir</button>
+        <button class="btn-secondary" id="clearCacheBtn" style="width:100%;">🗑️ Önbelleği Temizle</button>
+        <div class="info-box">Tüm kişisel verilerinizi JSON formatında indirebilirsiniz.</div>
+      </div>
+
+      <!-- Kaydet -->
+      <div class="button-group">
+        <button class="btn-primary" id="saveBtn">💾 Kaydet</button>
+        <button class="btn-secondary" id="resetBtn">↺ Sıfırla</button>
+      </div>
+      <div class="success-message" id="successMsg">Ayarlar kaydedildi!</div>
+      <div class="error-message" id="errorMsg"></div>
+
+    </div>
+  </div>
+
+  <script type="module" src="settings.js"></script>
+</body>
+</html>

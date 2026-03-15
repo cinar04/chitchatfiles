@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profil Ayarları</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .profile-container {
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .profile-header {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 30px;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 20px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .profile-avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      overflow: hidden;
+      border: 3px solid rgba(255, 255, 255, 0.2);
+      position: relative;
+    }
+
+    .profile-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .profile-info h2 {
+      margin: 0 0 10px 0;
+      font-size: 24px;
+      font-weight: 600;
+    }
+
+    .profile-info p {
+      margin: 5px 0;
+      color: #94a3b8;
+      font-size: 14px;
+    }
+
+    .profile-card {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .profile-card h3 {
+      margin: 0 0 15px 0;
+      font-size: 18px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .form-group label {
+      font-size: 13px;
+      font-weight: 500;
+      color: #cbd5e1;
+    }
+
+    .form-group input {
+      padding: 10px 12px;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #e2e8f0;
+      border-radius: 8px;
+      font-size: 14px;
+      transition: all 0.3s ease;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: #667eea;
+      background: rgba(102, 126, 234, 0.1);
+    }
+
+    .form-group input:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary, .btn-secondary, .btn-danger {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      flex: 1;
+      min-width: 120px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.1);
+      color: #e2e8f0;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .btn-danger {
+      background: rgba(248, 113, 113, 0.2);
+      color: #fca5a5;
+      border: 1px solid rgba(248, 113, 113, 0.3);
+    }
+
+    .btn-danger:hover {
+      background: rgba(248, 113, 113, 0.3);
+    }
+
+    .info-box {
+      background: rgba(102, 126, 234, 0.1);
+      border: 1px solid rgba(102, 126, 234, 0.3);
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 13px;
+      color: #cbd5e1;
+      margin-top: 10px;
+    }
+
+    .error-message {
+      color: #fca5a5;
+      font-size: 13px;
+      margin-top: 8px;
+      display: none;
+    }
+
+    .success-message {
+      color: #86efac;
+      font-size: 13px;
+      margin-top: 8px;
+      display: none;
+    }
+
+    .top-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      background: rgba(255, 255, 255, 0.05);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      margin-bottom: 20px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .top-nav button {
+      background: none;
+      border: none;
+      color: #e2e8f0;
+      font-size: 24px;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 6px;
+      transition: all 0.3s ease;
+    }
+
+    .top-nav button:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .top-nav h1 {
+      margin: 0;
+      font-size: 20px;
+      flex: 1;
+      text-align: center;
+    }
+
+    .loading-spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-top-color: #667eea;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-left: 8px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .avatar-change-hint {
+      font-size: 12px;
+      color: #94a3b8;
+      margin-top: 10px;
+      text-align: center;
+    }
+
+    .logout-btn {
+      width: 100%;
+      padding: 12px;
+      background: rgba(248, 113, 113, 0.2);
+      color: #fca5a5;
+      border: 1px solid rgba(248, 113, 113, 0.3);
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 30px;
+    }
+
+    .logout-btn:hover {
+      background: rgba(248, 113, 113, 0.3);
+    }
+  </style>
+</head>
+<body class="login-body">
+
+  <div class="app">
+    <div class="top-nav">
+      <button id="backBtn" title="Geri dön">←</button>
+      <h1>Profil Ayarları</h1>
+      <div style="width: 40px;"></div>
+    </div>
+
+    <div class="profile-container">
+
+      <!-- Profil Başlığı -->
+      <div class="profile-header">
+        <div class="profile-avatar" id="avatarContainer">
+          👤
+        </div>
+        <div class="profile-info">
+          <h2 id="displayName">Yükleniyor...</h2>
+          <p id="userEmail">-</p>
+          <p id="userNo">-</p>
+        </div>
+      </div>
+
+      <!-- Profil Bilgileri -->
+      <div class="profile-card">
+        <h3>👤 Profil Bilgileri</h3>
+        <div class="form-group">
+          <label>Kullanıcı Adı (Nick)</label>
+          <input type="text" id="nicknameInput" placeholder="Kullanıcı adınız">
+        </div>
+        <div class="button-group">
+          <button class="btn-primary" id="updateNicknameBtn">Kaydet</button>
+          <button class="btn-secondary" id="cancelNicknameBtn">İptal</button>
+        </div>
+        <div class="error-message" id="nicknameError"></div>
+        <div class="success-message" id="nicknameSuccess"></div>
+      </div>
+
+      <!-- Profil Fotoğrafı -->
+      <div class="profile-card">
+        <h3>🖼️ Profil Fotoğrafı</h3>
+        <div id="avatarPreview" style="width: 120px; height: 120px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; font-size: 48px; overflow: hidden; margin-bottom: 15px; border: 3px solid rgba(255, 255, 255, 0.2);">
+          👤
+        </div>
+        <input type="file" id="avatarFileInput" accept="image/png,image/jpeg" style="display: none;">
+        <button class="btn-primary" id="selectAvatarBtn" style="width: 100%; margin-bottom: 10px;">Fotoğraf Seç</button>
+        <div class="avatar-change-hint">PNG veya JPEG formatında resim yükleyebilirsiniz (maksimum 5MB)</div>
+        <div style="display: flex; gap: 10px; margin-top: 15px;">
+          <button class="btn-primary" id="uploadAvatarBtn" style="flex: 1;" disabled>Yükle</button>
+          <button class="btn-secondary" id="removeAvatarBtn" style="flex: 1;">Kaldır</button>
+        </div>
+        <div class="error-message" id="avatarError"></div>
+        <div class="success-message" id="avatarSuccess"></div>
+      </div>
+
+      <!-- Biyografi -->
+      <div class="profile-card">
+        <h3>📝 Biyografi</h3>
+        <div class="form-group">
+          <label>Hakkınızda</label>
+          <textarea id="bioInput" placeholder="Kendiniz hakkında kısa bilgi yazın..." style="padding: 10px 12px; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.1); color: #e2e8f0; border-radius: 8px; font-size: 14px; resize: vertical; min-height: 80px; font-family: inherit; transition: all 0.3s ease;"></textarea>
+          <div style="font-size: 12px; color: #94a3b8; margin-top: 8px;"><span id="bioCount">0</span>/200 karakter</div>
+        </div>
+        <div class="button-group">
+          <button class="btn-primary" id="updateBioBtn">Kaydet</button>
+          <button class="btn-secondary" id="cancelBioBtn">İptal</button>
+        </div>
+        <div class="error-message" id="bioError"></div>
+        <div class="success-message" id="bioSuccess"></div>
+      </div>
+
+      <!-- Sosyal Medya -->
+      <div class="profile-card">
+        <h3>🌐 Sosyal Medya</h3>
+
+        <div class="form-group">
+          <label>📸 Instagram</label>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <span style="padding:10px 12px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:#94a3b8;white-space:nowrap;">instagram.com/</span>
+            <input type="text" id="instagramInput" placeholder="kullanici_adi" class="settings-input" style="flex:1;padding:10px 12px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.1);color:#e2e8f0;border-radius:8px;font-size:14px;outline:none;">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>🐦 Twitter / X</label>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <span style="padding:10px 12px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:#94a3b8;white-space:nowrap;">x.com/</span>
+            <input type="text" id="twitterInput" placeholder="kullanici_adi" class="settings-input" style="flex:1;padding:10px 12px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.1);color:#e2e8f0;border-radius:8px;font-size:14px;outline:none;">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>▶️ YouTube</label>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <span style="padding:10px 12px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:#94a3b8;white-space:nowrap;">youtube.com/@</span>
+            <input type="text" id="youtubeInput" placeholder="kanal_adi" class="settings-input" style="flex:1;padding:10px 12px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.1);color:#e2e8f0;border-radius:8px;font-size:14px;outline:none;">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>💼 LinkedIn</label>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <span style="padding:10px 12px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:#94a3b8;white-space:nowrap;">linkedin.com/in/</span>
+            <input type="text" id="linkedinInput" placeholder="profil_adi" class="settings-input" style="flex:1;padding:10px 12px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.1);color:#e2e8f0;border-radius:8px;font-size:14px;outline:none;">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>👾 Discord</label>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <span style="padding:10px 12px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:#94a3b8;white-space:nowrap;">discord.gg/</span>
+            <input type="text" id="discordInput" placeholder="sunucu_veya_tag" class="settings-input" style="flex:1;padding:10px 12px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.1);color:#e2e8f0;border-radius:8px;font-size:14px;outline:none;">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>🎮 Twitch</label>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <span style="padding:10px 12px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:#94a3b8;white-space:nowrap;">twitch.tv/</span>
+            <input type="text" id="twitchInput" placeholder="kanal_adi" class="settings-input" style="flex:1;padding:10px 12px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.1);color:#e2e8f0;border-radius:8px;font-size:14px;outline:none;">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>🐱 GitHub</label>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <span style="padding:10px 12px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:#94a3b8;white-space:nowrap;">github.com/</span>
+            <input type="text" id="githubInput" placeholder="kullanici_adi" class="settings-input" style="flex:1;padding:10px 12px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.1);color:#e2e8f0;border-radius:8px;font-size:14px;outline:none;">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>🎵 Spotify</label>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <span style="padding:10px 12px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:#94a3b8;white-space:nowrap;">open.spotify.com/user/</span>
+            <input type="text" id="spotifyInput" placeholder="kullanici_adi" class="settings-input" style="flex:1;padding:10px 12px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.1);color:#e2e8f0;border-radius:8px;font-size:14px;outline:none;">
+          </div>
+        </div>
+
+        <div class="button-group" style="margin-top:8px;">
+          <button class="btn-primary" id="updateSocialBtn">Kaydet</button>
+          <button class="btn-secondary" id="cancelSocialBtn">İptal</button>
+        </div>
+        <div class="error-message" id="socialError"></div>
+        <div class="success-message" id="socialSuccess"></div>
+      </div>
+
+      <!-- Şifre Sıfırlama -->
+      <div class="profile-card">
+        <h3>🔐 Şifre Sıfırlama</h3>
+        <p style="color: #94a3b8; font-size: 13px; margin-bottom: 15px;">Şifrenizi sıfırlamak için doğrulama kodu içeren bir e-posta göndereceğiz.</p>
+        <button class="btn-primary" id="resetPasswordBtn" style="width: 100%;">Şifre Sıfırlama E-postası Gönder</button>
+        <div class="info-box">
+          E-postanızı kontrol edin. Doğrulama linki 24 saat geçerlidir.
+        </div>
+        <div class="error-message" id="passwordError"></div>
+        <div class="success-message" id="passwordSuccess"></div>
+      </div>
+
+      <!-- İki Faktörlü Doğrulama -->
+      <div class="profile-card">
+        <h3>🔒 İki Faktörlü Doğrulama</h3>
+        <p style="color: #94a3b8; font-size: 13px; margin-bottom: 15px;">Hesabınızı ek güvenlik katmanı ile koruyun.</p>
+        <button class="btn-primary" id="twoFactorBtn" style="width: 100%;">2FA Ayarları</button>
+        <div class="info-box">
+          Authenticator uygulaması veya e-posta doğrulaması kullanarak giriş yapabilirsiniz.
+        </div>
+      </div>
+
+      <!-- Cihaz Yönetimi (tek kart) -->
+      <div class="profile-card">
+        <h3>💻 Cihaz Yönetimi</h3>
+        <p style="color: #94a3b8; font-size: 13px; margin-bottom: 15px;">Hesabınıza erişen tüm cihazları yönetin. Tanımadığınız oturumları kapatabilirsiniz.</p>
+        <button class="btn-primary" id="devicesBtn" style="width: 100%;">Cihazlarımı Yönet</button>
+        <div class="info-box">
+          Tanıyamadığınız cihazları engelleme imkanınız vardır.
+        </div>
+      </div>
+
+      <!-- Gizlilik Ayarları (tek kart) -->
+      <div class="profile-card">
+        <h3>🔐 Gizlilik & Engelleme</h3>
+        <p style="color: #94a3b8; font-size: 13px; margin-bottom: 15px;">Kimler profilinizi görebilir ve mesajlaşabilir, engelleme ayarlarını düzenleyin.</p>
+        <button class="btn-primary" id="privacyBtn" style="width: 100%;">Gizlilik Ayarları</button>
+        <div class="info-box">
+          Profil görünürlüğü, çevrimiçi durumu ve engelleme ayarlarını düzenleyin.
+        </div>
+      </div>
+
+      <!-- Sistem Ayarları -->
+      <div class="profile-card">
+        <h3>⚙️ Sistem Ayarları</h3>
+        <p style="color: #94a3b8; font-size: 13px; margin-bottom: 15px;">Tema, dil ve bildirim tercihlerini yönetin.</p>
+        <button class="btn-primary" id="settingsBtn" style="width: 100%;">Sistem Ayarları</button>
+        <div class="info-box">
+          Arayüz temasını, dilini ve bildirim ayarlarını özelleştirin.
+        </div>
+      </div>
+
+      <!-- Çıkış Yap -->
+      <button class="logout-btn" id="logoutBtn">🚪 Çıkış Yap</button>
+
+    </div>
+  </div>
+
+  <script type="module" src="profile.js"></script>
+
+</body>
+</html>

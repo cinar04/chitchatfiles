@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ChitChat - Profil Kurulumu</title>
+  <link rel="stylesheet" href="style2.css">
+</head>
+
+<body class="login-body">
+  
+  <div class="login-box verify-box">
+    
+    <div class="verify-icon">⚙</div>
+    <h1>Profil Kurulumu</h1>
+    
+    <p id="infoText">
+      Google hesabınız başarıyla bağlandı!<br><br>
+      Devam etmek için lütfen bir takma ad belirleyin.
+    </p>
+    
+    <input type="text" id="nickname" placeholder="Takma Ad (Nickname)">
+    <input type="password" id="password" placeholder="Şifre (Min. 8 karakter) - Opsiyonel">
+    
+    <div class="passwordBar">
+      <div id="bar"></div>
+    </div>
+    
+    <p id="error" style="color:#f87171; font-size:13px; margin-bottom:12px; min-height:18px;"></p>
+    
+    <button id="setupBtn">Devam Et</button>
+    
+  </div>
+  
+  <script type="module">
+    import { auth, db } from "./firebase.js";
+    import {
+      updatePassword,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import {
+      doc,
+      updateDoc,
+      getDoc
+    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const nicknameInput = document.getElementById("nickname");
+    const passwordInput = document.getElementById("password");
+    const bar      = document.getElementById("bar");
+    const errorEl  = document.getElementById("error");
+    const setupBtn = document.getElementById("setupBtn");
+    const infoText = document.getElementById("infoText");
+
+    let passwordValid = true; // şifre opsiyonel, boş bırakılabilir
+    let currentUser = null;
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.replace("login.html");
+        return;
+      }
+
+      currentUser = user;
+
+      // Zaten tamamlandıysa geç
+      const userDoc = await getDoc(doc(db, "users", user.uid));
+      if (userDoc.exists() && userDoc.data().passwordSet === true) {
+        // nickname ve email localStorage'da var mı kontrol et
+        if (!localStorage.getItem("email")) {
+          localStorage.setItem("email", user.email);
+        }
+        if (!localStorage.getItem("nickname")) {
+          localStorage.setItem("nickname", userDoc.data().nickname || user.email.split("@")[0]);
+        }
+        window.location.replace("index.html");
+        return;
+      }
+
+      infoText.innerHTML = `
+        <strong>${user.email}</strong> adresiyle giriş yapıyorsunuz.<br><br>
+        Devam etmek için bir takma ad belirleyin.
+      `;
+
+      // Mevcut nickname varsa doldur
+      if (userDoc.exists() && userDoc.data().nickname) {
+        nicknameInput.value = userDoc.data().nickname;
+      }
+    });
+
+    passwordInput.addEventListener("input", () => {
+      const pass = passwordInput.value;
+
+      if (pass.length === 0) {
+        passwordValid = true; // boş bırakılabilir
+        bar.style.width = "0%";
+        return;
+      }
+
+      const lengthOk  = pass.length >= 8;
+      const specialOk = /[!@#$%^&*(),.?":{}|<>]/.test(pass);
+
+      let strength = 0;
+      if (pass.length >= 4)                       strength += 25;
+      if (pass.length >= 8)                       strength += 25;
+      if (/[A-Z]/.test(pass))                     strength += 25;
+      if (/[!@#$%^&*(),.?":{}|<>]/.test(pass))   strength += 25;
+
+      bar.style.width      = strength + "%";
+      bar.style.background = strength < 50 ? "red" : strength < 75 ? "orange" : "lime";
+
+      passwordValid = lengthOk && specialOk;
+    });
+
+    setupBtn.onclick = async () => {
+      const nickname = nicknameInput.value.trim();
+      const password = passwordInput.value.trim();
+
+      errorEl.innerText = "";
+
+      if (!nickname) {
+        errorEl.innerText = "Takma ad boş olamaz!";
+        return;
+      }
+
+      if (password && !passwordValid) {
+        errorEl.innerText = "Şifre min. 8 karakter ve özel karakter içermeli!";
+        return;
+      }
+
+      if (!currentUser) {
+        errorEl.innerText = "Kullanıcı bulunamadı!";
+        return;
+      }
+
+      try {
+        setupBtn.disabled  = true;
+        setupBtn.innerText = "Kaydediliyor...";
+
+        // Şifre girilmişse güncelle
+        if (password) {
+          await updatePassword(currentUser, password);
+        }
+
+        // Firestore'u güncelle
+        await updateDoc(doc(db, "users", currentUser.uid), {
+          nickname:    nickname,
+          email:       currentUser.email,
+          passwordSet: true
+        });
+
+        // localStorage'a kaydet
+        localStorage.setItem("email",    currentUser.email);
+        localStorage.setItem("nickname", nickname);
+
+        window.location.replace("index.html");
+
+      } catch (e) {
+        console.error("Setup hatası:", e);
+        if (e.code === "auth/weak-password") {
+          errorEl.innerText = "Şifre çok zayıf!";
+        } else if (e.code === "auth/requires-recent-login") {
+          errorEl.innerText = "Lütfen tekrar giriş yapın!";
+        } else {
+          errorEl.innerText = "Hata: " + e.message;
+        }
+        setupBtn.disabled  = false;
+        setupBtn.innerText = "Devam Et";
+      }
+    };
+  </script>
+  
+</body>
+</html>
