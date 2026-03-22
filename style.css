@@ -606,3 +606,17 @@ body {
 .dialog-ok.danger {
   background: linear-gradient(135deg, #ef4444, #dc2626);
 }
+
+/* 1. Fontu tanımlama */
+@font-face {
+    font-family: 'OzelFont';
+    src: url('fontum.ttf') format('truetype'); /* TTF dosyası yolu */
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* 2. Fontu kullanma */
+body {
+    font-family: 'OzelFont', sans-serif;
+}
+
